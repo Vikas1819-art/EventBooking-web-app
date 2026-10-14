@@ -22,7 +22,7 @@ public class UserService {
 		this.userRepository=userRepository;
 	}
 
-	//create 
+	//Create the users
 	
 	public UserResponseDto createUser(CreateUserRequestDto userReq) {
 		
@@ -43,7 +43,7 @@ public class UserService {
 	
 	
 	
-	// GET BY ID
+	// Get User by id
     public UserResponseDto getUserById(Long id) {
 
         User user = userRepository.findById(id)
@@ -53,7 +53,7 @@ public class UserService {
         return mapToResponseDto(user);
     }
 	
-    //get all User
+    //Get all User
     
     public List<UserResponseDto> getAllUsers(){
     	
@@ -65,7 +65,7 @@ public class UserService {
     	}
 	
     
-    // update user by id
+    // Update user by id
     
     public UserResponseDto updateUser(Long id ,UpdateUserRequestDto userReq) {
     	
@@ -84,7 +84,7 @@ public class UserService {
     }
     
     
-    // delete by id
+    // Delete user by id
     
     public void deleteUser(Long id ) {
     	User user = userRepository.findById(id)
@@ -94,7 +94,8 @@ public class UserService {
     }
 	
 	
-
+    //It maps entity to dto
+    
 	private UserResponseDto mapToResponseDto(User savedUser) {
 		
 		UserResponseDto dto = new UserResponseDto();
@@ -105,6 +106,9 @@ public class UserService {
 		
 		return dto ;
 	}
+	
+	
+	//It maps Dto to Entity
 
 	private User mapToEntity(CreateUserRequestDto userReq) {
 		
