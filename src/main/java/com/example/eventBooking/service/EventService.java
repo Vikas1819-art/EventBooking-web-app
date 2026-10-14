@@ -12,6 +12,7 @@ import com.example.eventBooking.dto.event.EventResponseDto;
 import com.example.eventBooking.dto.event.UpdateEventRequestDto;
 import com.example.eventBooking.entity.Event;
 import com.example.eventBooking.entity.Venue;
+import com.example.eventBooking.exception.ResourceNotFoundException;
 import com.example.eventBooking.repository.EventRepository;
 import com.example.eventBooking.repository.VenueRepository;
 
@@ -32,8 +33,8 @@ public class EventService {
 	
 	 public EventResponseDto createEvent(CreateEventRequestDto request) {
 
-	        Venue venue = venueRepository.findById(request.getVenueId())
-	                .orElseThrow(() -> new RuntimeException("Venue not found"));
+	        Venue venue = venueRepository.findById(request.venueId())
+	                .orElseThrow(() -> new ResourceNotFoundException("Venue not found"));
 
 	        Event eventToSave = mapToEntity(request , venue);
 
@@ -48,7 +49,7 @@ public class EventService {
 	 
 	 public EventResponseDto getEventById(Long id) {
 		 Event event = eventRepository.findById(id)
-				 .orElseThrow(() -> new RuntimeException("Event not found"));
+				 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 		 
 		 return mapToResponseDto(event);
 	 }
@@ -73,15 +74,15 @@ public class EventService {
 	                                        UpdateEventRequestDto request) {
 
 	        Event event = eventRepository.findById(id)
-	                .orElseThrow(() -> new RuntimeException("Event not found"));
+	                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
-	        Venue venue = venueRepository.findById(request.getVenueId())
-	                .orElseThrow(() -> new RuntimeException("Venue not found"));
+	        Venue venue = venueRepository.findById(request.venueId())
+	                .orElseThrow(() -> new ResourceNotFoundException("Venue not found"));
 
-	        event.setName(request.getName());
+	        event.setName(request.name());
 //	        event.setDescription(request.getDescription());
-	        event.setEventDate(request.getEventDate());
-	        event.setEventTime(request.getEventTime());
+	        event.setEventDate(request.eventDate());
+	        event.setEventTime(request.eventTime());
 	        event.setVenue(venue);
 
 	        Event updatedEvent = eventRepository.save(event);
@@ -94,7 +95,7 @@ public class EventService {
 	    
 	    public void deleteEvent(Long id) {
 	    	Event event = eventRepository.findById(id)
-	    			.orElseThrow(() -> new RuntimeException("Event not found"));
+	    			.orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 	    	
 	    	eventRepository.delete(event);
 	    }
@@ -126,27 +127,28 @@ public class EventService {
 	 
 	 private EventResponseDto mapToResponseDto(Event savedEvent) {
 		
-		 EventResponseDto dto = new EventResponseDto();
+		 EventResponseDto dto = new EventResponseDto(
+				 
+				 savedEvent.getId(),
+				 savedEvent.getName(),
+				 savedEvent.getEventDate(),
+				 savedEvent.getEventTime(),
+				 savedEvent.getVenue().getId(),
+				 savedEvent.getVenue().getName()
+				 );
 		 
-		 dto.setId(savedEvent.getId());
-		 dto.setName(savedEvent.getName());
-		 dto.setEventDate(savedEvent.getEventDate());
-		 dto.setEventTime(savedEvent.getEventTime());
-		 dto.setVenueId(savedEvent.getVenue().getId());
-         dto.setVenueName(savedEvent.getVenue().getName());
-		 
-		 
-		return dto;
+		 return dto ;
 	 }
+	 
 	 
 	
 	private Event mapToEntity(CreateEventRequestDto request, Venue venue) {
 		
 		Event event = new Event();
 		
-		event.setName(request.getName());
-        event.setEventDate(request.getEventDate());
-        event.setEventTime(request.getEventTime());
+		event.setName(request.name());
+        event.setEventDate(request.eventDateTime().toLocalDate());
+        event.setEventTime(request.eventDateTime().toLocalTime());
         event.setVenue(venue);
         
         return event ;

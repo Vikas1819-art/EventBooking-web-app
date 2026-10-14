@@ -1,46 +1,20 @@
 package com.example.eventBooking.dto.venue;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-public class CreateVenueRequestDto {
+public record CreateVenueRequestDto(
 	
-	@NotBlank(message="name is required")
-	private String name ;
+	@NotBlank(message="Name is required")
+	 String name ,
 	
-	@NotBlank(message="address is required")
-	private String address ;
+	@NotBlank(message="Address is required")
+	 String address ,
 	
-	@NotNull(message="capacity is required")
-	@Positive(message="capacity cannot be negative")
-	private Integer capacity;
+	@NotNull(message="Capacity is required")
+	@Positive(message="Capacity must be a positive number")
+	Integer capacity
 
+	) {}
 	
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public int getCapacity() {
-		return capacity;
-	}
-
-	public void setCapacity(int capacity) {
-		this.capacity = capacity;
-	}
-	
-	
-	
-	
-
-}

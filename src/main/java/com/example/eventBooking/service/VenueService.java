@@ -50,13 +50,13 @@ public class VenueService {
 		
 		Venue  existingVenue = venueRepository
 				.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("student with id "+id+ " is not found"));//findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("venue with id "+id+ " is not found"));//findById(id)
 
 		
 		Venue venueRes = existingVenue;
 		
-		venueRes.setCapacity(venueReq.getCapacity());
-		venueRes.setAddress(venueReq.getAddress());
+		venueRes.setCapacity(venueReq.capacity());
+		venueRes.setAddress(venueReq.address());
 		
 	Venue savedVenue =	venueRepository.save(venueRes);
 	
@@ -95,37 +95,44 @@ public class VenueService {
 		
 		Venue venue = new Venue();
 		
-		venue.setName(venueReq.getName());
-		venue.setAddress(venueReq.getAddress());
-		venue.setCapacity(venueReq.getCapacity());
+		venue.setName(venueReq.name());
+		venue.setAddress(venueReq.address());
+		venue.setCapacity(venueReq.capacity());
 		
 		return venue;
 	}
 	
 	public VenueResponseDto mapToDto(Venue venue) {
 		
-		VenueResponseDto venueRes = new VenueResponseDto();
+		VenueResponseDto venueRes = new VenueResponseDto(
+				venue.getId(),
+				venue.getName(),
+				venue.getAddress(),
+				venue.getCapacity()
+				);
+		return venueRes ;
 		
-		venueRes.setId(venue.getId());
-		venueRes.setName(venue.getName());
-		venueRes.setAddress(venue.getAddress());
-		venueRes.setCapacity(venue.getCapacity());
-		
-		return venueRes;
 	}
 	
 	
 	public Venue mapUpdateToEntity(UpdateVenueRequestDto venueReq) {
 		 Venue venue = new Venue();
 		 
-		 venue.setAddress(venueReq.getAddress());
-		 venue.setCapacity(venueReq.getCapacity());
+		 venue.setAddress(venueReq.address());
+		 venue.setCapacity(venueReq.capacity());
 		 
 		 return venue;
 	}
 	
 	
-	
+//	VenueResponseDto venueRes = new VenueResponseDto();
+//	
+//	venueRes.setId(venue.getId());
+//	venueRes.setName(venue.getName());
+//	venueRes.setAddress(venue.getAddress());
+//	venueRes.setCapacity(venue.getCapacity());
+//	
+//	return venueRes;
 	
 	
 	

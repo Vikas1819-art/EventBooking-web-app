@@ -13,14 +13,10 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
         
+
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.6.2/dist/css/tom-select.bootstrap5.css"
+      rel="stylesheet">        
         
-        <style>
-        
-        .form-select {
-        	color:white
-        }
-        
-        </style>
 
 </head>
 
@@ -49,19 +45,20 @@
             </a>
             
             
-            <!-- changes here has done -->
+            <c:if test="${userId != null}">
+        
             <a href="${pageContext.request.contextPath}/bookings-page" 
                class="btn btn-outline-light">
                My Bookings
             </a>
-            
+            </c:if>
             
            </div> 
             
             <div class="d-flex align-items-center gap-2"  >
         
        <form action="set-user" method="get" class="d-flex align-items-center gap-2">
-        <select name = "userId" class="form-select bg-black text-white " required>
+        <select name = "userId" id = "userId" class="form-select  " required>
         
         	<option value=""> Select User</option>
         	
@@ -98,7 +95,7 @@
         <h2>Available Events</h2>
 
         <a href="/create-event"
-           class="btn btn-primary">
+           class="btn btn-primary btn-sm">
             + Create Event
         </a>
 
@@ -109,14 +106,14 @@
 
     <form method="get"
           action="${pageContext.request.contextPath}/events-page"
-          class="row g-2 mb-4">
+          class="row g-2 mb-3">
 
         <div class="col-md-5">
 
             <input type="text"
                    name="search"
                    value="${search}"
-                   class="form-control"
+                   class="form-control  "
                    placeholder="Search event name">
 
         </div>
@@ -125,7 +122,8 @@
         <div class="col-md-4">
 
             <select name="venueId"
-                    class="form-select">
+            		id="venueId"
+                    class="form-select  ">
 
                 <option value="">All Venues</option>
 
@@ -145,12 +143,15 @@
         </div>
 
 
-        <div class="col-md-3">
+        <div class="col-md-3 d-flex gap-2">
 
             <button type="submit"
-                    class="btn btn-primary w-100">
-                Search / Filter
+                    class="btn btn-primary flex-fill">
+                Search
             </button>
+            
+            
+            <a class="btn btn-secondary  flex-fill" href="/events-page">Reset</a>
 
         </div>
 
@@ -162,7 +163,7 @@
         <c:when test="${empty events}">
 
             <div class="alert alert-warning">
-                No events found.
+                No events available for this name.
             </div>
 
         </c:when>
@@ -197,14 +198,14 @@
 
                             <td>${event.venueName}</td>
 
-                            <td>${event.eventDate}</td>
+                            <td>${event.getFormattedEventDate}</td>
 
-                            <td>${event.eventTime}</td>
+                            <td>${event.getFormattedEventTime}</td>
 
                             <td>
 
                                 <a href="${pageContext.request.contextPath}/seats-page?eventId=${event.id}"
-                                   class="btn btn-success">
+                                   class="btn btn-success btn-sm">
                                     Select Seats
                                 </a>
 
@@ -283,6 +284,24 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.2/dist/js/tom-select.complete.min.js"></script>
+
+  <script>
+    new TomSelect("#venueId", {
+        create: false
+    });
+    
+    
+    new TomSelect("#userId", {
+        create: false
+    });
+    
+   </script> 
+
+
+
 </body>
 </html>
+
+
 

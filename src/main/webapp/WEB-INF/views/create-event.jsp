@@ -14,6 +14,9 @@
     rel="stylesheet">
 
 
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.6.2/dist/css/tom-select.bootstrap5.css"
+      rel="stylesheet">
+
 </head>
 
 <body>
@@ -41,7 +44,7 @@
 
 </nav>
 
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
 
 <div class="row justify-content-center">
 
@@ -77,50 +80,23 @@
                     <div class="mb-3">
 
                         <label class="form-label">
-                            Event Date
+                            Event Date & Time
                         </label>
 
-                        <input type="date"
-                               name="eventDate"
-                               id="eventDate"
+                        <input type="datetime-local"
+                               name="eventDateTime"
+                               id="eventDateTime"
                                class="form-control"
-                               placeholder="YYYY-MM-DD"
+                               placeholder="select the date and time"
+                               
                                >
-                                <span id="eventDateError" class="text-danger"></span>
+                                <span id="eventDateTimeError" class="text-danger"></span>
 
                     </div>
 
 
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Event Time
-                        </label>
-
-                        <input type="time"
-                               name="eventTime"
-                               id="eventTime"
-                               class="form-control"
-                               placeholder="HH:MM"
-                               >
-                               <span id="eventTimeError" class="text-danger"></span>
-
-                    </div>
-
-
-                    <!-- <div class="mb-3">
-
-                        <label class="form-label">
-                            Venue ID
-                        </label>
-
-                        <input type="text"
-                               name="venueId"
-                               class="form-control"
-                               placeholder="Enter venue ID"
-                               required>
-
-                    </div> -->
+                 
+                   
                     
                     
 			      <div class="mb-3">
@@ -129,7 +105,7 @@
 			        Venue
 			    </label>
 			
-			    <select name="venueId" id="venueId" class="form-select" >
+			    <select name="venueId" id="venueId" class="form-select" size="5" >
 			
 			        <option value="">-- Select Venue --</option>
 			
@@ -182,8 +158,7 @@ $(document).ready(function () {
 
         const eventData = {
             name: $("#name").val(),
-            eventDate: $("#eventDate").val(),
-            eventTime: $("#eventTime").val(),
+            eventDateTime: $("#eventDateTime").val(),
             venueId: $("#venueId").val()
         };
 
@@ -196,7 +171,7 @@ $(document).ready(function () {
 
             success: function (response) {
 
-                alert("Event created successfully!");
+                alert("Event created successfully.");
 
                 window.location.href = "/events-page";
             },
@@ -215,7 +190,7 @@ $(document).ready(function () {
 
                 } else {
 
-                    alert("Something went wrong!");
+                    alert("Unable to create the event. Please try again.");
                 }
             }
 
@@ -224,6 +199,15 @@ $(document).ready(function () {
     });
 
 });
+		
+		$("input , select").on("input change" , function(){
+			const field = $(this).attr("name");
+			$("#"+ field +"Error").text("");
+		})
+		
+		
+
+
 
 </script>
 
@@ -232,8 +216,13 @@ $(document).ready(function () {
 
 
 
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.2/dist/js/tom-select.complete.min.js"></script>
 
-
+   <script>
+    new TomSelect("#venueId", {
+        create: false
+    });
+   </script>
 
 </body>
 </html>

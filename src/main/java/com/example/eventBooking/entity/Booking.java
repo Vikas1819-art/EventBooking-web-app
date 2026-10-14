@@ -18,7 +18,7 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime bookingDate;
+    private LocalDateTime bookingDateAndTime;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
@@ -43,12 +43,12 @@ public class Booking {
 		this.id = id;
 	}
 
-	public LocalDateTime getBookingDate() {
-		return bookingDate;
+	public LocalDateTime getBookingDateAndTime() {
+		return bookingDateAndTime;
 	}
 
-	public void setBookingDate(LocalDateTime bookingDate) {
-		this.bookingDate = bookingDate;
+	public void setBookingDateAndTime(LocalDateTime bookingDateAndTime) {
+		this.bookingDateAndTime = bookingDateAndTime;
 	}
 
 	public BookingStatus getStatus() {

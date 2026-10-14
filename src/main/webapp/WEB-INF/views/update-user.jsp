@@ -122,7 +122,7 @@
 			  
 			  success : function(response){
 				  
-				  alert("user updated successfully");
+				  alert("User updated successfully.");
 				  
 				  window.location.href="/users-page";
 			  },
@@ -136,7 +136,7 @@
 						  $("#" + field + "Error").text(message);
 					  })
 				  }else {
-					  alert("something went wrong")
+					  alert("Unable to Update the user. Please try again.")
 				  }
 			  }
 			  
@@ -146,6 +146,11 @@
 	  
   });
 
+  
+  $("input").on("input change" , function(){
+	  const field = $(this).attr("name");
+	  $("#" + field + "Error").text("");
+  })
 
 
 

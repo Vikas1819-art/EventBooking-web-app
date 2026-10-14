@@ -1,125 +1,93 @@
 
 $(document).ready(function () {
 
-    let selectedSeat = null;
+    let selectedSeats = [];
 
-
-    // Select a seat
+    // Select or deselect multiple available seats
     $(".seat:not(.booked)").click(function () {
 
-        $(".seat.selected")
-            .removeClass("selected");
-
-
-        $(this).addClass("selected");
-
-
-        selectedSeat = {
-
+        const seat = {
             id: $(this).data("seat-id"),
-
             seatNumber: $(this).data("seat-number"),
-
-            price: $(this).data("price")
-
+            price: Number($(this).data("price"))
         };
 
+        const index = selectedSeats.findIndex(
+            s => String(s.id) === String(seat.id)
+        );
 
-        $("#selectedSeat")
-            .text(selectedSeat.seatNumber);
+        if (index >= 0) {
+            selectedSeats.splice(index, 1);
+            $(this).removeClass("selected");
+        } else {
+            selectedSeats.push(seat);
+            $(this).addClass("selected");
+        }
 
-
-        $("#selectedPrice")
-            .text(selectedSeat.price);
-
-
-        $("#bookButton")
-            .prop("disabled", false);
-
+        updateSelection();
     });
 
+    function updateSelection() {
 
-    // Book selected seat
+        $("#selectedSeat").text(
+            selectedSeats.length
+                ? selectedSeats.map(s => s.seatNumber).join(", ")
+                : "None"
+        );
+
+        const total = selectedSeats.reduce(
+            (sum, seat) => sum + seat.price,
+            0
+        );
+
+        $("#selectedPrice").text(total.toFixed(2));
+
+        $("#bookButton")
+            .prop("disabled", selectedSeats.length === 0)
+            .text("Book Selected Seats (" + selectedSeats.length + ")");
+    }
+
     $("#bookButton").click(function () {
 
-        if (!selectedSeat) {
+        if (selectedSeats.length === 0) return;
+
+        const eventId = new URLSearchParams(
+            window.location.search
+        ).get("eventId");
+
+        if (!eventId) {
+            alert("Event ID is missing.");
             return;
         }
 
-
-        const params =
-            new URLSearchParams(window.location.search);
-
-        const eventId =
-            params.get("eventId");
-
-
         const bookingData = {
-
-           /* userId: 1,*/ // currently passing user id using http session
-
             eventId: Number(eventId),
-
-            seatId: selectedSeat.id
-
+            seatIds: selectedSeats.map(s => s.id)
         };
 
+        const button = $(this);
+        button.prop("disabled", true);
 
         $.ajax({
-
-            url: "/api/bookings",
-
+            url: "/api/bookings/bulk",
             type: "POST",
-
             contentType: "application/json",
-
             data: JSON.stringify(bookingData),
 
-
-            success: function (booking) {
-
-                alert(
-                    "Seat " +
-                    booking.seatNumber +
-                    " booked successfully!"
-                );
-
-
-                $(".seat.selected")
-                    .removeClass("selected")
-                    .addClass("booked")
-                    .prop("disabled", true);
-
-
-                selectedSeat = null;
-
-
-                $("#selectedSeat")
-                    .text("None");
-
-
-                $("#selectedPrice")
-                    .text("0");
-
-
-                $("#bookButton")
-                    .prop("disabled", true);
-
+            success: function () {
+                alert("All selected seats booked successfully!");
+                window.location.reload();
             },
 
-
             error: function (xhr) {
-
                 alert(
                     xhr.responseText ||
-                    "Unable to book seat."
+                    "Unable to book the selected seats."
                 );
 
+                button.prop("disabled", selectedSeats.length === 0);
             }
-
         });
-
     });
 
 });
-

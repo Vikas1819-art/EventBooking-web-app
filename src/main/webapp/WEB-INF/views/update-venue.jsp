@@ -140,7 +140,7 @@
 						
 						success : function(response){
 							
-							alert("venue updated successfully!!");
+							alert("Venue updated successfully.");
 							
 							window.location.href="/venues-page"
 							
@@ -156,7 +156,7 @@
 								
 								
 							}else{
-								alert("something went wrong!!")
+								alert("Unable to Update the venue. Please try again.")
 								
 							}
 						}
@@ -166,6 +166,13 @@
 				});
 				
 			});
+			
+			
+			
+			$("input").on("input" , function(){
+				const field = $(this).attr("name");
+				$("#" + field + "Error").text("");
+			})
 
 
 </script>

@@ -23,11 +23,14 @@ import com.example.eventBooking.dto.venue.CreateVenueRequestDto;
 import com.example.eventBooking.dto.venue.UpdateVenueRequestDto;
 import com.example.eventBooking.dto.venue.VenueResponseDto;
 import com.example.eventBooking.entity.BookingStatus;
+import com.example.eventBooking.exception.ResourceNotFoundException;
 import com.example.eventBooking.service.BookingService;
 import com.example.eventBooking.service.EventService;
 import com.example.eventBooking.service.SeatService;
 import com.example.eventBooking.service.UserService;
 import com.example.eventBooking.service.VenueService;
+
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -61,7 +64,6 @@ public class PageController {
 	
 	
 	
-	
 	//redirects to events page
 	
 	@GetMapping("/events-page")
@@ -69,7 +71,10 @@ public class PageController {
 	        @RequestParam(defaultValue = "0") int page,
 	        @RequestParam(defaultValue = "") String search,
 	        @RequestParam(required = false) Long venueId,
+	        HttpSession session ,
 	        Model model) {
+		
+		Long userId = (Long) session.getAttribute("userId");
 
 	    Pageable pageable = PageRequest.of(page, 5);
 
@@ -88,6 +93,7 @@ public class PageController {
 	    model.addAttribute("venues", venueService.getAllVenues());
 	    
 	    model.addAttribute("users", users);
+	    model.addAttribute("userId", userId);
 
 	    return "events";
 	}
@@ -130,8 +136,14 @@ public class PageController {
 	//redirects to venue page
 	
 	@GetMapping("/venues-page")
-	public String venuesPage(Model model) {
+	public String venuesPage(Model model ,HttpSession session) {
+		
+		Long userId = (Long) session.getAttribute("userId");
+		
 		model.addAttribute("venues" , venueService.getAllVenues() );
+		
+		model.addAttribute("userId", userId);
+		
 		return "venues";
 	}
 
@@ -159,25 +171,42 @@ public class PageController {
 	@GetMapping("/seats-page")
 	public String seatsPage(
 	        @RequestParam Long eventId,
+	        HttpSession session ,
 	        Model model) {
+		
+		try {
+			
+			Long userId = (Long) session.getAttribute("userId");
+			
+			EventResponseDto event =
+		            eventService.getEventById(eventId);
 
-	    EventResponseDto event =
-	            eventService.getEventById(eventId);
+		    List<SeatResponseDto> seats =
+		            seatService.getSeatsByEventId(eventId);
 
-	    List<SeatResponseDto> seats =
-	            seatService.getSeatsByEventId(eventId);
+		    List<BookingResponseDto> bookings =
+		            bookingService.getBookingsByEventId(eventId);
+		    
+		    boolean hasSeats = seatService.hasSeats(eventId);
 
-	    List<BookingResponseDto> bookings =
-	            bookingService.getBookingsByEventId(eventId);
+		    model.addAttribute("event", event);
+		    model.addAttribute("seats", seats);
+		    model.addAttribute("bookings", bookings);
+		    model.addAttribute("hasSeats", hasSeats);
+		    model.addAttribute("userId", userId);
+
+		    return "seats";
+			
+		}catch(ResourceNotFoundException ex) {
+			
+			model.addAttribute("message", ex.getMessage());
+			
+			return "error";
+			
+		}
+		
+
 	    
-	    boolean hasSeats = seatService.hasSeats(eventId);
-
-	    model.addAttribute("event", event);
-	    model.addAttribute("seats", seats);
-	    model.addAttribute("bookings", bookings);
-	    model.addAttribute("hasSeats", hasSeats);
-
-	    return "seats";
 	}
 	
 	
@@ -204,9 +233,19 @@ public class PageController {
     
     @GetMapping("/update-user")
     public String updateUser(@RequestParam Long userId , Model model) {
-    	UserResponseDto user = userService.getUserById(userId);
-    	model.addAttribute("user", user);
-    	return "update-user";
+    	
+    	try {
+    		
+    		UserResponseDto user = userService.getUserById(userId);
+        	model.addAttribute("user", user);
+        	return "update-user";
+    		
+    	}catch(ResourceNotFoundException ex) {
+    		model.addAttribute("message", ex.getMessage());
+    		return "error" ;
+    	}
+    	
+    	
     }
     
     
@@ -214,14 +253,24 @@ public class PageController {
     
     @GetMapping("/generate-page")
 	public String generateSeats(@RequestParam Long eventId , Model model) {
+    	
+    	try {
+    		
+    		EventResponseDto event =	eventService.getEventById(eventId);
+    		VenueResponseDto venue = venueService.getVenueById(event.venueId());
+    		
+    		model.addAttribute("event", event);
+    		model.addAttribute("venue", venue);
+    			
+    			return "generate";
+    		
+    	}catch(ResourceNotFoundException ex) {
+    		model.addAttribute("message", ex.getMessage());
+    		
+    		return "error";
+    	}
 		 
-	EventResponseDto event =	eventService.getEventById(eventId);
-	VenueResponseDto venue = venueService.getVenueById(event.getVenueId());
 	
-	model.addAttribute("event", event);
-	model.addAttribute("venue", venue);
-		
-		return "generate";
 	}
 	
     
@@ -240,12 +289,24 @@ public class PageController {
 	
 	@GetMapping("/update-venue")
 	public String updateVenue(@RequestParam Long venueId , Model model) {
-		VenueResponseDto venue = venueService.getVenueById(venueId);
 		
-		model.addAttribute("venue", venue);
+		try {
+			
+			VenueResponseDto venue = venueService.getVenueById(venueId);
+			
+			model.addAttribute("venue", venue);
+			
+			return "update-venue";
+
+			
+		}catch(ResourceNotFoundException ex) {
+			 
+			model.addAttribute("message", ex.getMessage());
+			return "error";
+		}
 		
-		return "update-venue";
-	}
+			}
+	
 	
     
     

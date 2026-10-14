@@ -8,6 +8,7 @@ import com.example.eventBooking.dto.user.CreateUserRequestDto;
 import com.example.eventBooking.dto.user.UpdateUserRequestDto;
 import com.example.eventBooking.dto.user.UserResponseDto;
 import com.example.eventBooking.entity.User;
+import com.example.eventBooking.exception.DuplicateResourceException;
 import com.example.eventBooking.exception.ResourceNotFoundException;
 import com.example.eventBooking.repository.UserRepository;
 
@@ -24,6 +25,12 @@ public class UserService {
 	//create 
 	
 	public UserResponseDto createUser(CreateUserRequestDto userReq) {
+		
+		boolean alreadyExist = userRepository.existsByEmail(userReq.getEmail());
+		
+		if(alreadyExist) {
+			throw new DuplicateResourceException("User with this email already exists.");
+		}
 		
 		User userToSave = mapToEntity(userReq);
 		
@@ -61,6 +68,8 @@ public class UserService {
     // update user by id
     
     public UserResponseDto updateUser(Long id ,UpdateUserRequestDto userReq) {
+    	
+    	
     	
     	User user = userRepository.findById(id)
     			.orElseThrow(() -> new ResourceNotFoundException("User not found"));

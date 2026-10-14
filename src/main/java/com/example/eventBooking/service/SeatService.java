@@ -152,7 +152,7 @@ public class SeatService {
       // Generate seat numbers
         for (int row = 0; row < request.getRows(); row++) {
 
-            char rowLetter = (char) ('A' + row);
+        	String rowLetter = getRowLabel(row);
 
             for (int number = 1;
                  number <= request.getSeatsPerRow();
@@ -189,6 +189,21 @@ public class SeatService {
         return savedSeats.stream()
                 .map(this::mapToResponseDto)
                 .toList();
+    }
+    
+    
+    
+    private String getRowLabel(int row) {
+        StringBuilder label = new StringBuilder();
+        int number = row + 1;
+
+        while (number > 0) {
+            number--;
+            label.insert(0, (char) ('A' + number % 26));
+            number /= 26;
+        }
+
+        return label.toString();
     }
 
     

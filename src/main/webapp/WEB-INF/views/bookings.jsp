@@ -51,7 +51,7 @@
         
         
         
-        <form action="${pageContext.request.contextPath}/bookings-page" method="get" class="row g-2 mb-4">
+        <form action="${pageContext.request.contextPath}/bookings-page" method="get" class="row g-2 mb-3">
         
         <input type="hidden" name="userId" value="${user.id}" >
         
@@ -60,14 +60,14 @@
         	<input type="text" 
 		        	name="search" 
 		        	value="${search}" 
-		        	class="form-control"
+		        	class="form-control form-control-sm"
 		        	 placeholder="Search here...">
         	
         	</div>
         
             <div class="col-md-4">
             
-            <select name="status" class="form-select">
+            <select name="status" class="form-select form-select-sm">
             
             <option value="">Select Status</option>
               
@@ -90,12 +90,12 @@
             
             </div>
         
-            <div class="col-md-3">
+            <div class="col-md-3 d-flex gap-2">
             
-            <button type="submit" class="btn btn-outline-dark btn-success">Search</button>
+            <button type="submit" class="btn btn-outline-dark btn-success btn-sm flex-fill " style="color:white; " >Search</button>
             
-            <a href="${pageContext.request.contextPath}/bookings-page?userId=${user.id}" 
-            class="btn btn-secondary">
+            <a href="${pageContext.request.contextPath}/bookings-page" 
+            class="btn btn-secondary btn-sm flex-fill " >
              Reset </a>
             
             
@@ -118,7 +118,7 @@
         <c:when test="${empty bookings}">
 
             <div class="alert alert-warning">
-                No bookings found.
+                No bookings Available.
             </div>
 
         </c:when>
@@ -133,6 +133,7 @@
                         <th>Event</th>
                         <th>Seat</th>
                         <th>Booking Date</th>
+                        <th>Booking Time</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -154,7 +155,11 @@
                             </td>
 
                             <td>
-                                ${booking.bookingDate}
+                                ${booking.formattedBookingDate}
+                            </td>
+                            
+                            <td>
+                                ${booking.formattedBookingTime}
                             </td>
 
                             <td>
@@ -292,20 +297,7 @@
 
             </c:if>
             
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+       
             
 
        </c:otherwise>
@@ -320,7 +312,19 @@
 <script>
 
 
-$(".cancel-btn").click(function () {
+		
+		
+		
+		
+
+
+
+
+
+
+
+
+ $(".cancel-btn").click(function () {
 
     const button = $(this);
     const bookingId = button.data("id");
@@ -366,7 +370,7 @@ $(".cancel-btn").click(function () {
         }
     });
 });
-
+ 
 
 
 $(".confirm-btn").click(function () {

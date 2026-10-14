@@ -14,11 +14,11 @@ public class GenerateSeatsRequestDto {
     @NotNull
     private Long venueId;
 
-    @NotNull(message="please provide number of rows")
+    @NotNull(message="Please provide number of rows")
     @Min(value = 1, message = "Rows must be at least 1")
     private Integer rows;
 
-    @NotNull(message="please provide number of seats per row")
+    @NotNull(message="Please provide number of seats per row")
     @Min(value = 1, message = "Seats per row must be at least 1")
     private Integer seatsPerRow;
 

@@ -149,7 +149,7 @@ $(document).ready(function() {
         const venueData = {
             name: $("#name").val(),
             address: $("#address").val(),
-            capacity: Number($("#capacity").val())
+            capacity: ($("#capacity").val())
         };
 
         $.ajax({
@@ -161,7 +161,7 @@ $(document).ready(function() {
 
             success: function(response) {
 
-                alert("Venue created successfully!");
+                alert("Venue created successfully.");
 
                 window.location.href = "/venues-page";
             },
@@ -180,7 +180,7 @@ $(document).ready(function() {
 
                 } else {
 
-                    alert("Something went wrong");
+                    alert("Unable to create the venue. Please try again.");
 
                 }
 
@@ -191,6 +191,14 @@ $(document).ready(function() {
     });
 
 });
+
+		
+		$("input").on("input" , function(){
+			const field = $(this).attr("name");
+			$("#" + field + "Error").text("");
+		});
+
+
 
 </script>
 

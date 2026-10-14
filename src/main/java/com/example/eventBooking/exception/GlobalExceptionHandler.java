@@ -12,27 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	
-	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<String> resourceNotFoundException(ResourceNotFoundException ex){
-		return ResponseEntity.status(HttpStatus.NOT_FOUND)
-				.body(ex.getMessage());
-	}
 	
-	
-	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<String> handleRunTimeException(RuntimeException ex){
-		
-		
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body(ex.getMessage());
-	}
-	
-	
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handleRunTimeException(Exception ex){
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body("something went wrong");
-	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String,String>> handleValidationError(MethodArgumentNotValidException ex){
@@ -56,10 +36,48 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.badRequest().body(error);
 	}
 	
+	@ExceptionHandler(DuplicateResourceException.class)
+	public ResponseEntity<Map<String, String >> handleDuplicateResourceException(DuplicateResourceException ex){
 		
+		Map<String , String> error = new HashMap<>();
+		error.put("duplicateEmail", ex.getMessage());
+		
+		return ResponseEntity.badRequest().body(error);
+	}
 	
 	
 	
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgument(
+	        IllegalArgumentException ex) {
+
+	    return ResponseEntity
+	            .badRequest()
+	            .body(ex.getMessage());
+	}
+	
+	
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<String> resourceNotFoundException(ResourceNotFoundException ex){
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(ex.getMessage());
+	}
+	
+	
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<String> handleRunTimeException(RuntimeException ex){
+		
+		
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body("Something went wrong. Please try again.");
+	}
+	
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<String> handleRunTimeException(Exception ex){
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body("An unexpected error occurred. Please try again.");
+	}
 	
 	
 	

@@ -57,4 +57,16 @@ public class SeatResponseDto {
     public void setVenueName(String venueName) {
         this.venueName = venueName;
     }
+    
+    
+    public String getRowLabel() {
+        if (seatNumber == null) {
+            return "";
+        }
+
+        return seatNumber.replaceAll("\\d+$", "");
+    }
+    
+    
+    
 }

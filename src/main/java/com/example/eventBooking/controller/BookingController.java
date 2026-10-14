@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.eventBooking.dto.booking.BookingResponseDto;
 import com.example.eventBooking.dto.booking.CreateBookingRequestDto;
 import com.example.eventBooking.dto.booking.UpdateBookingRequestDto;
+import com.example.eventBooking.dto.seat.CreateMultipleBookingRequestDto;
 import com.example.eventBooking.service.BookingService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,7 +41,7 @@ public class BookingController {
     	Long userId = (Long) session.getAttribute("userId");
     	
     	if(userId == null) {
-    		throw new IllegalArgumentException("select a user first in the events page");
+    		throw new IllegalArgumentException("Please select a user on the Events page before booking a seat.");
     	}
     	
         BookingResponseDto response =
@@ -122,6 +123,30 @@ public class BookingController {
           return new  ResponseEntity<>(response ,HttpStatus.OK);
     }
     
+    
+    // for bulk booking
+    
+	@PostMapping("/bulk")
+	@Operation(
+	    summary = "Book multiple seats",
+	    description = "Books multiple seats for one event"
+	)
+	public ResponseEntity<List<BookingResponseDto>> createMultipleBookings(
+	        @Valid @RequestBody CreateMultipleBookingRequestDto request,
+	        HttpSession session) {
+	
+	    Long userId = (Long) session.getAttribute("userId");
+	
+	    if (userId == null) {
+	        throw new IllegalArgumentException(
+	                "Please select a user on the Events page before booking a seat.");
+	    }
+	
+	    List<BookingResponseDto> responses =
+	            bookingService.createMultipleBookings(request, userId);
+	
+	    return ResponseEntity.status(HttpStatus.CREATED).body(responses);
+	}
     
     
 }

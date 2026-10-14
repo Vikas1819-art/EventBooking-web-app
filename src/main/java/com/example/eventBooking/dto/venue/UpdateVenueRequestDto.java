@@ -4,28 +4,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public class UpdateVenueRequestDto {
+public record UpdateVenueRequestDto (
 	
-	@NotBlank(message="address is required")
-	private String address ;
+	@NotBlank(message="Address is required")
+	String address ,
 	
-	@NotNull(message="capacity is required")
-	@Positive(message="capacity cannot be negative")
-	private Integer capacity ;
+	@NotNull(message="Capacity is required")
+	@Positive(message="Capacity must be a positive number")
+	 Integer capacity 
 	
 	
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	public Integer getCapacity() {
-		return capacity;
-	}
-	public void setCapacity(Integer capacity) {
-		this.capacity = capacity;
-	}
+	) {
 	
 	
 

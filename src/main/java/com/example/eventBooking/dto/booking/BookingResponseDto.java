@@ -1,6 +1,7 @@
 package com.example.eventBooking.dto.booking;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.example.eventBooking.entity.BookingStatus;
 
@@ -8,7 +9,7 @@ public class BookingResponseDto {
 	
 	private Long id;
 
-    private LocalDateTime bookingDate;
+    private LocalDateTime bookingDateAndTime;
 
     private BookingStatus status;
 
@@ -26,11 +27,13 @@ public class BookingResponseDto {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public LocalDateTime getBookingDate() {
-		return bookingDate;
+	
+	
+	public LocalDateTime getBookingDateAndTime() {
+		return bookingDateAndTime;
 	}
-	public void setBookingDate(LocalDateTime bookingDate) {
-		this.bookingDate = bookingDate;
+	public void setBookingDateAndTime(LocalDateTime bookingDateAndTime) {
+		this.bookingDateAndTime = bookingDateAndTime;
 	}
 	public BookingStatus getStatus() {
 		return status;
@@ -75,7 +78,16 @@ public class BookingResponseDto {
 		this.seatNumber = seatNumber;
 	}
     
+	
+	public String getFormattedBookingDate() {
+		return  bookingDateAndTime.format(
+				DateTimeFormatter.ofPattern("dd MMM yyyy"));
+	}
     
+	public String getFormattedBookingTime() {
+		return bookingDateAndTime.format(
+				DateTimeFormatter.ofPattern("hh:mm a"));
+	}
 	
 	
 

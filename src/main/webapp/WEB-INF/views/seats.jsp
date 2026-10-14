@@ -29,7 +29,16 @@
 				<div>
 				
 				<a href="/events-page" class="btn btn-outline-light me-2"> Events</a>
-				<a href="/venues-page" class="btn btn-outline-light">Venues</a>
+				<a href="/venues-page" class="btn btn-outline-light me-2">Venues</a>
+				
+		     <c:if test="${userId != null}">
+        
+	            <a href="${pageContext.request.contextPath}/bookings-page" 
+	               class="btn btn-outline-light">
+	               My Bookings
+	            </a>
+             </c:if>
+				
 				
 				</div>
 
@@ -41,7 +50,7 @@
 
 
 
- <div class="container mt-4">
+ <div class="container mt-4 mb-5">
 
    
  <div class="d-flex justify-content-between align-items-center mb-2">
@@ -71,19 +80,35 @@
         </p>
 
         <p>
-            Date: ${event.eventDate}
+            Date: ${event.getFormattedEventDate}
             |
-            Time: ${event.eventTime}
+            Time: ${event.getFormattedEventTime}
         </p>
 
     </div>
 
+ <div class="text-center mt-4">
 
+        <span class="badge bg-success p-2 me-2">
+            Available
+        </span>
+
+        <span class="badge bg-primary p-2 me-2">
+            Selected
+        </span>
+
+        <span class="badge bg-danger p-2">
+            Booked
+        </span>
+
+    </div>
     
 
     <div class="stage">
         STAGE
     </div>
+    
+    
 
 
 
@@ -98,10 +123,14 @@
             <c:forEach var="seat" items="${seats}">
 
              
+                
+                
                 <c:set
-                    var="currentRow"
-                    value="${seat.seatNumber.substring(0, 1)}"
-                />
+				    var="currentRow"
+				    value="${seat.rowLabel}"
+				/>
+                
+                
 
                 <c:if test="${currentRow != previousRow}">
 
@@ -166,6 +195,11 @@
             <c:if test="${not empty previousRow}">
                 </div>
             </c:if>
+            
+            
+            
+            
+            
 
         </div>
 
@@ -174,53 +208,31 @@
 
   
 
-    <div class="text-center mt-4">
-
-        <span class="badge bg-success p-2 me-2">
-            Available
-        </span>
-
-        <span class="badge bg-primary p-2 me-2">
-            Selected
-        </span>
-
-        <span class="badge bg-danger p-2">
-            Booked
-        </span>
-
-    </div>
+   
 
 
    <!-- information of the selected seat -->
 
-    <div class="text-center mt-4">
-
-        <h5>
-            Selected Seat:
-            <span id="selectedSeat">
-                None
-            </span>
-        </h5>
-
-
-        <h5>
-            Price:
-            ₹<span id="selectedPrice">
-                0
-            </span>
-        </h5>
-
-
-        <button
-            id="bookButton"
-            class="btn btn-primary mt-2"
-            disabled>
-
-            Book Selected Seat
-
-        </button>
-
-    </div>
+    
+		<div class="text-center mt-4">
+		
+		    <h5>
+		        Selected Seats:
+		        <span id="selectedSeat">None</span>
+		    </h5>
+		
+		    <h5>
+		        Total Price: ₹<span id="selectedPrice">0</span>
+		    </h5>
+		
+		    <button
+		        id="bookButton"
+		        class="btn btn-primary mt-2"
+		        disabled>
+		        Book Selected Seats
+		    </button>
+		
+		</div>
 
 </div>
 

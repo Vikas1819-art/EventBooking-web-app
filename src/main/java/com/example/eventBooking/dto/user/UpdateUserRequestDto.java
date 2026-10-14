@@ -6,14 +6,14 @@ import jakarta.validation.constraints.Size;
 
 public class UpdateUserRequestDto {
 
-    @NotBlank(message="name cannot be empty")
+    @NotBlank(message="Name cannot be empty")
     private String name;
 
 //    @NotBlank
 //    @Email(message="It should be a valid email")
 //    private String email;
 
-    @NotBlank(message="password is must")
+    @NotBlank(message="Password is must")
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 

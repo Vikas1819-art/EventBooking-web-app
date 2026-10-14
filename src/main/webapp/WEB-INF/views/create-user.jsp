@@ -47,6 +47,9 @@
 						
 								<h2 class="mb-4 text-center">Create User</h2>
 								
+								
+								 <h6 id="duplicateEmailError" class="text-danger text-center"></h6>
+								
 						<!-- 		action="create-user" method="post" -->
 								
 								<form id="createUserForm">
@@ -149,7 +152,7 @@
 				data : JSON.stringify(userData),
 				
 				success : function(response){
-					alert("user created successfully!!");
+					alert("User created successfully.");
 					
 					window.location.href="/users-page"
 				},
@@ -168,7 +171,7 @@
 						
 					}else{
 						
-						alert("something went wrong!");
+						alert("Unable to create the user. Please try again.");
 						
 					}
 					
@@ -184,6 +187,14 @@
 	});
 	
 	
+	$("input").on("input change" , function(){
+		const field =  $(this).attr("name");
+		$("#"+ field +"Error").text("");
+	})
+	
+	$("#email").on("input", function () {
+    $("#duplicateEmailError").text("");
+});
 	
 	
 	</script>

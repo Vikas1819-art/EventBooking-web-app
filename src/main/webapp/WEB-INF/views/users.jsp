@@ -9,6 +9,17 @@
  <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
+        
+        
+        <style >
+        
+        #add-button {
+    font-size: 20px;
+   
+}
+        
+        
+        </style>
 
 </head>
 
@@ -34,13 +45,21 @@
 
 <div class="container mt-5">
 
-<div class="d-flex justify-content-between align-item-center mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
 
 <h2>List of Available Users</h2>
 
-<a class="btn btn-success" href="/create-user"> + Add User</a>
 
-</div>
+
+<a class="btn btn-success btn-sm"  href="/create-user"> + Add User</a>
+
+
+</div> 
+
+
+ 
+ 
+
 
    <c:choose>
    
@@ -78,7 +97,7 @@
     		      <td>${user.email }</td>
     		      <td>
     		      
-    		      <a href="/update-user?userId=${user.id}" class="btn btn-primary">Update</a>
+    		      <a href="/update-user?userId=${user.id}" class="btn btn-primary btn-sm">Update</a>
     		      
     		     <%--  <a href="/delete-user?userId=${user.id }" class="btn btn-danger">Delete</a> --%>
     		     

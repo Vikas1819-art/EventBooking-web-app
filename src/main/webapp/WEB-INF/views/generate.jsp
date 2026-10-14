@@ -50,7 +50,7 @@
 						
 						<h6 id="capacityError" class="text-danger text-center"></h6>
 						
-						 
+						
 						 
 						
 								<h4 class="mb-4 text-center">generate seats for : <i style="color:grey;"><b>${event.name}</b></i>   </h4>
@@ -64,10 +64,20 @@
 									
 									<input type="hidden" name="eventId" value="${event.id}">
 									
+									<div class="form-text mb-3">
+									<strong>Rows × Seats per Row = Total Seats.</strong>
+                                     Total seats cannot exceed venue capacity.
+									
+									
+									</div>
+									
+									
+									
+									
 									<div class="mb-3">
 									
 									 <label class="form-label">
-                                      Number of rows :
+                                      Rows :
                                      </label>
 
                         <input type="text"
@@ -99,7 +109,7 @@
                     <div class="mb-3">
 
                         <label class="form-label">
-                            Price:
+                            Price :
                         </label>
 
                         <input type="number"
