@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import org.springframework.data.domain.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,7 @@ import com.example.eventBooking.dto.venue.CreateVenueRequestDto;
 import com.example.eventBooking.dto.venue.UpdateVenueRequestDto;
 import com.example.eventBooking.dto.venue.VenueResponseDto;
 import com.example.eventBooking.entity.BookingStatus;
+import com.example.eventBooking.exception.DuplicateResourceException;
 import com.example.eventBooking.exception.ResourceNotFoundException;
 import com.example.eventBooking.service.BookingService;
 import com.example.eventBooking.service.EventService;
@@ -53,15 +55,6 @@ public class PageController {
 		this.userService= userService;
 	}
 
-	@GetMapping("/set-user")
-	public String setUser(@RequestParam Long userId , HttpSession session) {
-		
-		session.setAttribute("userId" ,userId );
-		
-		return "redirect:/events-page";
-		
-	}
-	
 	
 	
 	//redirects to events page
@@ -71,17 +64,17 @@ public class PageController {
 	        @RequestParam(defaultValue = "0") int page,
 	        @RequestParam(defaultValue = "") String search,
 	        @RequestParam(required = false) Long venueId,
-	        HttpSession session ,
+	        Authentication authentication ,
 	        Model model) {
 		
-		Long userId = (Long) session.getAttribute("userId");
+		Long userId = userService.getUserIdByEmail(authentication.getName());
 
 	    Pageable pageable = PageRequest.of(page, 5);
 
 	    Page<EventResponseDto> eventPage =
 	            eventService.getEvents(search, venueId, pageable);
 
-	    List<UserResponseDto> users = userService.getAllUsers();
+	   
 	    
 	    model.addAttribute("events", eventPage.getContent());
 	    model.addAttribute("currentPage", page);
@@ -92,7 +85,7 @@ public class PageController {
 
 	    model.addAttribute("venues", venueService.getAllVenues());
 	    
-	    model.addAttribute("users", users);
+	    
 	    model.addAttribute("userId", userId);
 
 	    return "events";
@@ -106,11 +99,11 @@ public class PageController {
 			@RequestParam(defaultValue="0") int page ,
 			@RequestParam(defaultValue="") String search,
 			@RequestParam(required=false) BookingStatus status,
-	        HttpSession session,
+			Authentication authentication,
 	        Model model) {
 		
-		Long userId = (long) session.getAttribute("userId");
-
+		Long userId = userService.getUserIdByEmail(authentication.getName());
+		
 		Pageable pagable = PageRequest.of(page, 10);
 		Page<BookingResponseDto> bookingsPage = bookingService.searchBookings(userId ,search, status, pagable);
 		
@@ -136,9 +129,9 @@ public class PageController {
 	//redirects to venue page
 	
 	@GetMapping("/venues-page")
-	public String venuesPage(Model model ,HttpSession session) {
+	public String venuesPage(Model model ,Authentication authentication) {
 		
-		Long userId = (Long) session.getAttribute("userId");
+		Long userId = userService.getUserIdByEmail(authentication.getName());
 		
 		model.addAttribute("venues" , venueService.getAllVenues() );
 		
@@ -171,12 +164,12 @@ public class PageController {
 	@GetMapping("/seats-page")
 	public String seatsPage(
 	        @RequestParam Long eventId,
-	        HttpSession session ,
+	        Authentication authentication,
 	        Model model) {
 		
 		try {
 			
-			Long userId = (Long) session.getAttribute("userId");
+			Long userId = userService.getUserIdByEmail(authentication.getName());
 			
 			EventResponseDto event =
 		            eventService.getEventById(eventId);
@@ -306,6 +299,43 @@ public class PageController {
 		}
 		
 			}
+	
+	
+	
+	
+	//login and register flow
+	
+	@GetMapping("/login")
+	public String loginPage() {
+	    return "login";
+	}
+
+	@GetMapping("/register")
+	public String registerPage(Model model) {
+	    model.addAttribute("user", new CreateUserRequestDto());
+	    return "register";
+	}
+
+	@PostMapping("/register")
+	public String registerUser(
+	        @Valid @ModelAttribute("user") CreateUserRequestDto user,
+	        BindingResult result,
+	        Model model) {
+
+	    if (result.hasErrors()) {
+	    	  model.addAttribute("result", result);
+	        return "register";
+	    }
+
+	    try {
+	        userService.createUser(user);
+	        return "redirect:/login?registered";
+
+	    } catch (DuplicateResourceException ex) {
+	        model.addAttribute("duplicateEmailError", ex.getMessage());
+	        return "register";
+	    }
+	}
 	
 	
     

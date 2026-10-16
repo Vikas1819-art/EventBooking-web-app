@@ -2,6 +2,7 @@ package com.example.eventBooking.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.*;
 
 import com.example.eventBooking.dto.user.CreateUserRequestDto;
@@ -17,9 +18,11 @@ import com.example.eventBooking.repository.UserRepository;
 public class UserService {
 	
 	private UserRepository userRepository;
+	private PasswordEncoder passwordEncoder ;
 	
-	public UserService(UserRepository userRepository) {
+	public UserService(UserRepository userRepository,PasswordEncoder passwordEncoder) {
 		this.userRepository=userRepository;
+		this.passwordEncoder=passwordEncoder;
 	}
 
 	//Create the users
@@ -76,7 +79,10 @@ public class UserService {
     	
     	user.setName(userReq.getName());
 //    	user.setEmail(userReq.getEmail());
-    	user.setPassword(userReq.getPassword());
+    	
+    	String encodedPassword = passwordEncoder.encode(userReq.getPassword());
+    	
+    	user.setPassword(encodedPassword);
     	
     	User savedUser = userRepository.save(user);
     	
@@ -92,6 +98,24 @@ public class UserService {
     	
     	userRepository.delete(user);
     }
+    
+    
+    
+    
+    public Long getUserIdByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+        return user.getId();
+    }
+    
+    
+    
+    
+    
+    
+    
 	
 	
     //It maps entity to dto
@@ -116,7 +140,10 @@ public class UserService {
 		
 		user.setName(userReq.getName());
 		user.setEmail(userReq.getEmail());
-		user.setPassword(userReq.getPassword());
+		
+		String encodedPassword = passwordEncoder.encode(userReq.getPassword());
+		
+		user.setPassword(encodedPassword);
 		
 		return user;
 	}

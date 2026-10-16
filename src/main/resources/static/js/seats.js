@@ -67,10 +67,17 @@ $(document).ready(function () {
 
         const button = $(this);
         button.prop("disabled", true);
+		
+		
+		const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
         $.ajax({
             url: "/api/bookings/bulk",
             type: "POST",
+		    headers:{
+				[csrfHeader]:csrfToken
+			},
             contentType: "application/json",
             data: JSON.stringify(bookingData),
 

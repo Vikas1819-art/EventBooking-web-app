@@ -1,6 +1,8 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <!DOCTYPE html>
 <html>
@@ -15,6 +17,10 @@
         
         <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet">
 
+
+		<meta name="_csrf" content="${_csrf.token}" />
+        <meta name="_csrf_header" content="${_csrf.headerName}" />
+ 
     
 </head>
 
@@ -31,8 +37,8 @@
 				<a href="/events-page" class="btn btn-outline-light me-2"> Events</a>
 				<a href="/venues-page" class="btn btn-outline-light me-2">Venues</a>
 				
+				
 		     <c:if test="${userId != null}">
-        
 	            <a href="${pageContext.request.contextPath}/bookings-page" 
 	               class="btn btn-outline-light">
 	               My Bookings
@@ -59,13 +65,15 @@
         Select Your Seat
     </h2>
     
-				   <c:if test="${not hasSeats}">
+    
+          <sec:authorize access="hasRole('ADMIN')">   
+				<c:if test="${not hasSeats}">
 				    <a href="/generate-page?eventId=${event.id}"
 				       class="btn btn-success">
 				        Generate Seats
 				    </a>
 				</c:if>
-
+         </sec:authorize> 
 </div>
   
 

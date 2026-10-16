@@ -5,9 +5,11 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -64,8 +66,21 @@ public class GlobalExceptionHandler {
 	}
 	
 	
+	
+	@ExceptionHandler(NoResourceFoundException.class)
+	public String handleNoResourceFoundException(NoResourceFoundException ex , Model model) {
+		
+		model.addAttribute("message", "page not found");
+		
+		return "error";
+	}
+	
+	
+	
+	
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<String> handleRunTimeException(RuntimeException ex){
+		
 		
 		
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -75,6 +90,11 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleRunTimeException(Exception ex){
+		
+		
+		
+	
+		
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body("An unexpected error occurred. Please try again.");
 	}

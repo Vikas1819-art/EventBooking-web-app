@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 
@@ -41,13 +42,14 @@
             Events
         </a>
 
-       <!--  <a href="/venues-page" class="btn btn-outline-light">
-            Venues
-        </a> -->
+       
+        <sec:authorize access="hasRole('ADMIN')">
+	        <a href="/users-page" class="btn btn-outline-light me-2">
+	            Users
+	        </a>
+        </sec:authorize>
         
-        <a href="/users-page" class="btn btn-outline-light me-2">
-            Users
-        </a>
+        
         
              <c:if test="${userId != null}">
 	            <a href="${pageContext.request.contextPath}/bookings-page" 
@@ -71,9 +73,14 @@
 
     <h2>Available Venues</h2>
 
-    <a href="/create-venue" class="btn btn-primary btn-sm">
-        + Create Venue
-    </a>
+
+    <sec:authorize access="hasRole('ADMIN')" >
+	    <a href="/create-venue" class="btn btn-primary btn-sm">
+	        + Create Venue
+	    </a>
+    </sec:authorize>
+    
+    
 
 </div>
 
@@ -94,7 +101,11 @@
                         ${venue.name}
                     </h5>
                     
-                    <a class="btn btn-success btn-sm" href="/update-venue?venueId=${venue.id}">Update</a>
+                    
+                    <sec:authorize access="hasRole('ADMIN')">
+                 	   <a class="btn btn-success btn-sm" href="/update-venue?venueId=${venue.id}">Update</a>
+                    </sec:authorize>
+                    
                     
 		</div>
                     <p class="card-text">

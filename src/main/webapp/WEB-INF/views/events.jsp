@@ -1,6 +1,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html>
@@ -32,55 +33,54 @@
         
         
 
-        <div class="d-flex align-items-center gap-2">
-
+       <div>
             <a href="/venues-page"
                class="btn btn-outline-light me-2">
                 Venues
             </a>
 
-            <a href="/users-page"
-               class="btn btn-outline-light me-2">
-                Users
-            </a>
+
+            <sec:authorize access="hasRole('ADMIN')">
+	            <a href="/users-page"
+	               class="btn btn-outline-light me-2">
+	                Users
+	            </a>
+            </sec:authorize>
             
-            
-            <c:if test="${userId != null}">
+           
+           
+           <c:if test="${userId != null}">
         
             <a href="${pageContext.request.contextPath}/bookings-page" 
-               class="btn btn-outline-light">
+               class="btn btn-outline-light me-2">
                My Bookings
             </a>
             </c:if>
             
-           </div> 
             
-            <div class="d-flex align-items-center gap-2"  >
-        
-       <form action="set-user" method="get" class="d-flex align-items-center gap-2">
-        <select name = "userId" id = "userId" class="form-select  " required>
-        
-        	<option value=""> Select User</option>
-        	
-	        	<c:forEach var="user" items="${users}">
-	        	
-	        			<option value="${user.id}"
-	        			
-	        			<c:if test="${userId == user.id}">selected</c:if>
-	        			
-	        			
-	        			> ${user.name} </option>
-	        	
-	        	
-	        	</c:forEach>
-        </select>   
-        
-        <button type="submit" class="btn btn-secondary " style="height:38px; width:175px">Set User</button>
-        
-        </form>
-        </div>
             
-
+			<form action="${pageContext.request.contextPath}/logout"
+			      method="post"
+			      class="d-inline">
+			      
+			      <input type="hidden"
+			      name="${_csrf.parameterName}"
+			      value="${_csrf.token}">
+			
+			    <button type="submit" class="btn btn-danger">
+			        Logout
+			    </button>
+			
+			</form>
+			            
+            
+            
+            
+           
+         </div>
+ 
+           
+           
         
 
     </div>
@@ -94,10 +94,14 @@
 
         <h2>Available Events</h2>
 
+
+	<sec:authorize access="hasRole('ADMIN')">
         <a href="/create-event"
            class="btn btn-primary btn-sm">
             + Create Event
         </a>
+        </sec:authorize>
+        
 
     </div>
 

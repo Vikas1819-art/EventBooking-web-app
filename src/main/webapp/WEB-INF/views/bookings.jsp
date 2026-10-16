@@ -13,6 +13,9 @@
         rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
 
 </head>
 
@@ -206,6 +209,8 @@
 				                data-user-id="${booking.userId}"
 				                data-event-id="${booking.eventId}"
 				                data-seat-id="${booking.seatId}">
+				                
+				                
 				            Confirm
 				        </button>
 				
@@ -340,9 +345,16 @@
         status: "CANCELLED"
     };
 
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+    
+    
     $.ajax({
         url: "${pageContext.request.contextPath}/api/bookings/" + bookingId,
         type: "PUT",
+        headers:{
+        	[csrfHeader]:csrfToken
+        },
         contentType: "application/json",
         data: JSON.stringify(bookingData),
 
@@ -356,7 +368,9 @@
                 .removeClass("text-dark")
                 .text("CANCELLED");
 
-            button.remove();
+            /* button.remove(); */
+            row.find(".confirm-btn").remove();
+            row.find(".cancel-btn").remove();
 
             alert("Booking cancelled successfully.");
         },
@@ -390,12 +404,21 @@ $(".confirm-btn").click(function () {
         status: "CONFIRMED"
 
     };
+    
+    
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+    
 
     $.ajax({
 
         url: "${pageContext.request.contextPath}/api/bookings/" + bookingId,
 
         type: "PUT",
+        
+        headers:{
+        	[csrfHeader]:csrfToken
+        },
 
         contentType: "application/json",
 

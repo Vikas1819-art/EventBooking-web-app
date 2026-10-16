@@ -8,6 +8,9 @@
 	<link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     rel="stylesheet">
+    
+    <meta name="_csrf" content="${_csrf.token}" />
+        <meta name="_csrf_header" content="${_csrf.headerName}" />
 	
 	
 	</head>
@@ -169,10 +172,16 @@
 					price : $("#price").val()
 			}
 			
+			const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+			
 			$.ajax({
 				
 				url : "/api/seats/generate" ,
 				type : "POST",
+				headers:{
+					[csrfHeader]:csrfToken
+				},
 				contentType : "application/json",
 				data : JSON.stringify(seatsData),
 				
